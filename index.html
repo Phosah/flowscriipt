@@ -5,13 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Flowscriipt Input Mask</title>
     <script src="https://unpkg.com/imask@6.0.6/dist/imask.js"></script>
-    <script src="js/script.js"></script>
+    <script src="js/date.js"></script>
+    <script src="js/ipv4.js"></script>
   </head>
+
+  <style>
+    section {
+      margin-bottom: 1rem;
+    }
+  </style>
+
   <body>
+    <header>
+      <h1>Flowscriipt</h1>
+    </header>
     <main>
-      <header>
-        <h1>Flowscriipt</h1>
-      </header>
       <section>
         <label for="date">Date Input</label>
         <input
@@ -20,6 +28,26 @@
           id="date"
           fs-input-mask="date"
           placeholder="Date (dd/mm/yyyy)"
+        />
+      </section>
+      <section>
+        <label for="ipv4">IP address Input (IPv4)</label>
+        <input
+          type="text"
+          name="ipv4"
+          id="ipv4"
+          fs-input-mask="IPv4"
+          placeholder="IP (192.168.1.1.)"
+        />
+      </section>
+      <section>
+        <label for="ipv6">IP address Input (IPv6)</label>
+        <input
+          type="text"
+          name="ipv6"
+          id="ipv6"
+          fs-input-mask="IPv6"
+          placeholder="IP (2001:0db8:85a3:0000:0000:8a2e:0370:7334.)"
         />
       </section>
     </main>

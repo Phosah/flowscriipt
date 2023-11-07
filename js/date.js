@@ -40,6 +40,8 @@ document.addEventListener("DOMContentLoaded", function () {
           const currentYear = new Date().getFullYear();
           if (year < 1900 || year > 2100) year = currentYear;
 
+          // formattedValue = `${day}/${month}/${year}`;
+
           formattedValue = `${day.toString().padStart(2, "0")}/${month
             .toString()
             .padStart(2, "0")}/${year}`;
