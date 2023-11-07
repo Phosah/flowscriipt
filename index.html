@@ -9,6 +9,7 @@
     <script src="js/ipv4.js"></script>
     <script src="js/ipv6.js"></script>
     <script src="js/product-key.js"></script>
+    <script src="js/thousand.js"></script>
   </head>
 
   <style>
@@ -59,8 +60,18 @@
           name="productKey"
           id="productKey"
           fs-input-mask="productKey"
-          placeholder="Product key: (2001:0db8:85a3:0000:0000:8a2e:0370:7334.)"
+          placeholder="Product key: (ASD45-0db81-DFDRG-AS000-JK67H)"
           maxlength="29"
+        />
+      </section>
+      <section>
+        <label for="thousand">Thousand Seperator</label>
+        <input
+          type="text"
+          name="thousand"
+          id="thousand"
+          fs-input-mask="thousand"
+          placeholder="Thousand separator: (1,000)"
         />
       </section>
     </main>
