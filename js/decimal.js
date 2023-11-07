@@ -7,14 +7,19 @@ document.addEventListener("DOMContentLoaded", function () {
     input.addEventListener("input", function (event) {
       let value = event.target.value;
 
-      if (maskType === "thousand") {
-        const formattedValue = value.replace(/[^0-9]/g, "");
+      if (maskType === "decimal") {
+        const numericValue = value.replace(/[^\d.]/g, "");
 
-        // Split the formatted value into groups of 3 digits each from the end
-        const groups = formattedValue.match(/\d{1,3}(?=(\d{3})*$)/g);
+        // Ensure only one decimal point is present
+        const parts = numericValue.split(".");
+        if (parts.length > 2) {
+          parts.pop();
+        }
 
-        this.value = groups ? groups.join(",") : "";
+        this.value = parts.join(".");
       }
     });
   });
 });
+
+console.log("This script works");

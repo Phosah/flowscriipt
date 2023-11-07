@@ -13,11 +13,8 @@ document.addEventListener("DOMContentLoaded", function () {
         // Split the formatted value into groups of 5 characters each
         const groups = formattedValue.match(/.{1,5}/g);
 
-        // Join the groups with hyphens
         this.value = groups ? groups.join("-") : "";
       }
     });
   });
 });
-
-console.log(`This script works `);
