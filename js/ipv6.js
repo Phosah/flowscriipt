@@ -4,24 +4,33 @@ document.addEventListener("DOMContentLoaded", function () {
   inputElements.forEach(function (input) {
     const maskType = input.getAttribute("fs-input-mask");
 
-    if (maskType === "IPv6") {
-      input.addEventListener("input", function (event) {
-        let value = event.target.value;
+    input.addEventListener("input", function (event) {
+      let value = event.target.value;
 
-        // Remove all non-digit and non-dot characters
-        value = value.replace(/[^0-9.]/g, "");
+      if (maskType === "IPv6") {
+        // Remove all non-hexadecimal and non-colon characters
+        value = value.replace(/[^0-9a-fA-F:]/g, "");
 
-        // Remove existing dots
-        value = value.replace(/\./g, "");
+        // Remove all colons
+        value = value.replace(/:/g, "");
 
-        // Add a dot after every 3 digits
-        value = value.replace(/(\d{3})/g, "$1.");
+        // Split the value into segments of 4 characters
+        const segments = value.match(/.{1,4}/g) || [];
 
-        // Remove the trailing dot, if any
-        value = value.replace(/\.$/, "");
+        // If there are more than 8 segments, remove the extra
+        if (segments.length > 8) {
+          segments.length = 8;
+        }
 
-        event.target.value = value;
-      });
-    }
+        // Join the segments with colons
+        value = segments.join(":");
+
+        if (value.length > 45) {
+          value = value.slice(0, 45);
+        }
+      }
+
+      event.target.value = value;
+    });
   });
 });
