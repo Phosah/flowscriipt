@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Flowscriipt Input Mask</title>
-    <script src="https://unpkg.com/imask@6.0.6/dist/imask.js"></script>
     <script src="js/date.js"></script>
     <script src="js/ipv4.js"></script>
     <script src="js/ipv6.js"></script>
@@ -12,6 +11,7 @@
     <script src="js/thousand.js"></script>
     <script src="js/decimal.js"></script>
     <script src="js/currency.js"></script>
+    <script src="js/phone.js"></script>
   </head>
 
   <style>
@@ -32,6 +32,7 @@
           name="date"
           id="date"
           fs-input-mask="date"
+          fs-input-mask-char="#"
           placeholder="Date (dd/mm/yyyy)"
         />
       </section>
@@ -92,8 +93,20 @@
           type="text"
           name="currency"
           id="currency"
-          fs-input-mask="currency"
+          fs-input-mask="currency &"
+          fs-input-custom="LLLL"
           placeholder="Currency: ($1400)"
+        />
+      </section>
+      <section>
+        <label for="phone">Phone</label>
+        <input
+          type="text"
+          name="phone"
+          id="phone"
+          fs-input-mask="phone"
+          fs-input-mask-code="234"
+          placeholder="Phone: (+234 700 023 0938)"
         />
       </section>
     </main>
