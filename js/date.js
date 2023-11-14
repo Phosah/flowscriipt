@@ -226,9 +226,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
   inputElements.forEach(function (input) {
     const maskType = input.getAttribute("fs-input-mask");
+    const maskChar = input.getAttribute("fs-input-mask-char");
 
     if (maskType === "date") {
-      input.value = "__/__/____";
+      // input.value = "__/__/____";
+      input.value = maskChar.repeat(10);
+      input.value = input.value
+        .split("")
+        .map((char, index) => {
+          if (index === 2 || index === 5) {
+            return "/";
+          } else {
+            return char;
+          }
+        })
+        .join("");
 
       input.addEventListener("keydown", function (event) {
         if (event.key === "Backspace" || event.key === "Delete") {
@@ -240,7 +252,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
           if (event.key === "Backspace" || event.key === "Delete") {
             if (pos !== 0 && input.value[pos - 1] !== "/") {
-              newValue[pos - 1] = "_";
+              // newValue[pos - 1] = "_";
+              newValue[pos - 1] = maskChar;
               pos--;
             }
           }
@@ -253,21 +266,33 @@ document.addEventListener("DOMContentLoaded", function () {
       input.addEventListener("input", function (event) {
         // const value = event.target.value.replace(/_/g, "").replace(/\//g, "");
         const value = event.target.value
-          .replace(/_/g, "")
+          // .replace(/_/g, "")
+          .replace(new RegExp(maskChar, "g"), "")
           .replace(/\//g, "")
           .replace(/\D/g, "");
-        let formattedValue = "__/__/____".split("");
+        // let formattedValue = "__/__/____".split("");
+
+        let formattedValue = maskChar.repeat(10).split("");
+
+        formattedValue[2] = "/";
+        formattedValue[5] = "/";
+
+        input.value = formattedValue.join("");
 
         for (
           let i = 0, j = 0;
           i < value.length && j < formattedValue.length;
-          i++, j++
+          j++
         ) {
           if (j === 2 || j === 5) {
-            j++;
+            // Maintain the initial slashes
+            formattedValue[j] = "/";
+          } else {
+            formattedValue[j] = value[i++];
           }
-          formattedValue[j] = value[i];
         }
+
+        input.value = formattedValue.join("").slice(0, 10);
 
         let day = formattedValue.slice(0, 2).join("");
         let month = formattedValue.slice(3, 5).join("");
