@@ -267,7 +267,8 @@ document.addEventListener("DOMContentLoaded", function () {
         // const value = event.target.value.replace(/_/g, "").replace(/\//g, "");
         const value = event.target.value
           // .replace(/_/g, "")
-          .replace(new RegExp(maskChar, "g"), "")
+          // .replace(new RegExp(maskChar === "." ? "\\" : maskChar, "g"), "")
+          .replace(new RegExp("\\" + maskChar, "g"), "")
           .replace(/\//g, "")
           .replace(/\D/g, "");
         // let formattedValue = "__/__/____".split("");
