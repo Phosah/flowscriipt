@@ -236,15 +236,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
           let pos = input.selectionStart;
           let newValue = input.value.split("");
+          console.log(newValue);
 
-          if (event.key === "Backspace") {
+          if (event.key === "Backspace" || event.key === "Delete") {
             if (pos !== 0 && input.value[pos - 1] !== "/") {
               newValue[pos - 1] = "_";
               pos--;
-            }
-          } else if (event.key === "Delete") {
-            if (pos < input.value.length - 1 && input.value[pos] !== "/") {
-              newValue[pos] = "_";
             }
           }
 
@@ -268,7 +265,62 @@ document.addEventListener("DOMContentLoaded", function () {
           formattedValue[j] = value[i];
         }
 
+        let day = formattedValue.slice(0, 2).join("");
+        let month = formattedValue.slice(3, 5).join("");
+        let year = formattedValue.slice(6).join("");
+
+        // Day formatting
+        if (parseInt(day.charAt(0)) > 3) {
+          day = "3" + day.charAt(1);
+          formattedValue[0] = day.charAt(0);
+        } else if (
+          parseInt(day.charAt(0)) === 3 &&
+          parseInt(day.charAt(1)) > 1
+        ) {
+          day = day.charAt(0) + "1";
+          formattedValue[1] = day.charAt(1);
+          console.log(`${day.charAt(1)} is greater than 1`);
+        } else {
+          formattedValue[0] = day.charAt(0);
+          formattedValue[1] = day.charAt(1);
+        }
+
+        // Month formatting
+        console.log(`month - ${month}`);
+        let newMonth = month;
+        if (parseInt(month.charAt(0)) > 1) {
+          newMonth = "0" + month.charAt(1);
+          formattedValue[3] = newMonth.charAt(0);
+        } else if (
+          parseInt(month.charAt(0)) === 1 &&
+          parseInt(month.charAt(1)) > 2
+        ) {
+          newMonth = month.charAt(0) + "2";
+          formattedValue[4] = newMonth.charAt(1);
+        } else {
+          formattedValue[3] = month.charAt(0);
+          formattedValue[4] = month.charAt(1);
+        }
+
+        // Year formatting
+        let newYear = year;
+        if (!isNaN(parseInt(newYear.charAt(3)))) {
+          if (parseInt(newYear) < 1900 || parseInt(newYear) > 2100) {
+            newYear = new Date().getFullYear().toString();
+            formattedValue[6] = newYear.charAt(0);
+            formattedValue[7] = newYear.charAt(1);
+            formattedValue[8] = newYear.charAt(2);
+            formattedValue[9] = newYear.charAt(3);
+          } else {
+            formattedValue[6] = newYear.charAt(0);
+            formattedValue[7] = newYear.charAt(1);
+            formattedValue[8] = newYear.charAt(2);
+            formattedValue[9] = newYear.charAt(3);
+          }
+        }
+
         event.target.value = formattedValue.join("");
+        console.log(`Day: ${day}, Month: ${month}, Year: ${year}`);
       });
     }
   });
