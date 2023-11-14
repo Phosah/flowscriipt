@@ -251,7 +251,11 @@ document.addEventListener("DOMContentLoaded", function () {
       });
 
       input.addEventListener("input", function (event) {
-        const value = event.target.value.replace(/_/g, "").replace(/\//g, "");
+        // const value = event.target.value.replace(/_/g, "").replace(/\//g, "");
+        const value = event.target.value
+          .replace(/_/g, "")
+          .replace(/\//g, "")
+          .replace(/\D/g, "");
         let formattedValue = "__/__/____".split("");
 
         for (
@@ -300,6 +304,32 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
           formattedValue[3] = month.charAt(0);
           formattedValue[4] = month.charAt(1);
+        }
+
+        // Day limit based on month
+        if (
+          newMonth === "04" ||
+          newMonth === "06" ||
+          newMonth === "09" ||
+          newMonth === "11"
+        ) {
+          if (parseInt(day) > 30) {
+            day = "30";
+            formattedValue[0] = day.charAt(0);
+            formattedValue[1] = day.charAt(1);
+          }
+        } else if (newMonth === "02") {
+          if (parseInt(day) > 29) {
+            day = "29";
+            formattedValue[0] = day.charAt(0);
+            formattedValue[1] = day.charAt(1);
+          }
+        } else {
+          if (parseInt(day) > 31) {
+            day = "31";
+            formattedValue[0] = day.charAt(0);
+            formattedValue[1] = day.charAt(1);
+          }
         }
 
         // Year formatting
