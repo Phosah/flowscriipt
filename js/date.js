@@ -148,6 +148,11 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         event.target.value = formattedValue.join("");
+
+        let nextUnderscoreIndex = input.value.indexOf(maskChar);
+        if (nextUnderscoreIndex !== -1) {
+          input.setSelectionRange(nextUnderscoreIndex, nextUnderscoreIndex);
+        }
         console.log(`Day: ${day}, Month: ${month}, Year: ${year}`);
       });
     }

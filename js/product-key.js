@@ -66,29 +66,13 @@ document.addEventListener("DOMContentLoaded", function () {
           }
         }
 
-        // formattedValue[0] = "-";
-        // formattedValue[1] = "-";
-        // formattedValue[-1] = "-";
-        // formattedValue[-1] = "-";
-
-        // console.log(formattedValue[23]);
-
-        // console.log(input.value);
-
-        // for (
-        //   let i = 0, j = 0;
-        //   i < value.length && j < formattedValue.length;
-        //   j++
-        // ) {
-        //   if (j === 5 || j === 11 || j === 17 || j === 23) {
-        //     // Maintain the initial slashes
-        //     formattedValue[j] = "-";
-        //   } else {
-        //     formattedValue[j] = value[i++];
-        //   }
-        // }
-
         input.value = formattedValue.join("").slice(0, 29);
+
+        // Find the position of the next underscore and set the cursor position to that index
+        let nextUnderscoreIndex = input.value.indexOf(maskChar);
+        if (nextUnderscoreIndex !== -1) {
+          input.setSelectionRange(nextUnderscoreIndex, nextUnderscoreIndex);
+        }
 
         console.log(event);
         console.log(`This is the value from input - ${event.target.value}`);
