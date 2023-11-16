@@ -4,14 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Flowscriipt Input Mask</title>
-    <script src="js/date.js"></script>
-    <script src="js/ipv4.js"></script>
-    <script src="js/ipv6.js"></script>
-    <script src="js/product-key.js"></script>
-    <script src="js/thousand.js"></script>
-    <script src="js/decimal.js"></script>
-    <script src="js/currency.js"></script>
-    <script src="js/phone.js"></script>
   </head>
 
   <style>
@@ -32,10 +24,23 @@
           name="date"
           id="date"
           fs-input-mask="date"
-          fs-input-mask-char="$"
+          fs-input-mask-char=""
           placeholder="Date (dd/mm/yyyy)"
         />
       </section>
+
+      <section>
+        <label for="productKey">Product Key</label>
+        <input
+          type="text"
+          name="productKey"
+          id="productKey"
+          fs-input-mask="productKey"
+          fs-input-mask-char="#"
+          placeholder="Product key: (ASD45-0db81-DFDRG-AS000-JK67H)"
+        />
+      </section>
+
       <section>
         <label for="ipv4">IP address Input (IPv4)</label>
         <input
@@ -56,17 +61,7 @@
           placeholder="IP (2001:0db8:85a3:0000:0000:8a2e:0370:7334.)"
         />
       </section>
-      <section>
-        <label for="productKey">Product Key</label>
-        <input
-          type="text"
-          name="productKey"
-          id="productKey"
-          fs-input-mask="productKey"
-          placeholder="Product key: (ASD45-0db81-DFDRG-AS000-JK67H)"
-          maxlength="29"
-        />
-      </section>
+
       <section>
         <label for="thousand">Thousand Seperator</label>
         <input
@@ -110,5 +105,14 @@
         />
       </section>
     </main>
+
+    <script src="js/product-key.js"></script>
+    <script src="js/date.js"></script>
+    <!-- <script src="js/ipv4.js"></script>
+    <script src="js/ipv6.js"></script> -->
+    <!-- <script src="js/thousand.js"></script>
+    <script src="js/decimal.js"></script>
+    <script src="js/currency.js"></script>
+    <script src="js/phone.js"></script> -->
   </body>
 </html>
