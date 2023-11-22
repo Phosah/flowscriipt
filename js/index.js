@@ -6,8 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let maskChar = input.getAttribute("fs-input-mask-char");
     let maskCurrency = input.getAttribute("fs-input-currency");
 
-    // Date Input mask
-
+    // ************** Date input mask ************** //
     if (maskType === "date") {
       if (maskChar === "") {
         maskChar = "_";
@@ -160,7 +159,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     }
 
-    // Product Key input mask
+    // ************** Product Key input mask ************** //
     if (maskType === "productKey") {
       if (maskChar === "") {
         maskChar = "_";
@@ -235,7 +234,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     }
 
-    // IPv4 input mask
+    // ************** IPV4 input mask ************** //
     if (maskType === "IPv4") {
       if (maskChar === "" || maskChar === ".") {
         maskChar = "_";
@@ -306,29 +305,9 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log(event);
         console.log(`This is the value from input - ${event.target.value}`);
       });
-
-      // input.addEventListener("input", function (event) {
-      //   let value = event.target.value;
-
-      //   // Remove all non-digit and non-dot characters
-      //   value = value.replace(/[^0-9.]/g, "");
-
-      //   // Remove existing dots
-      //   value = value.replace(/\./g, "");
-
-      //   const segments = value.match(/\d{1,3}/g) || [];
-
-      //   if (segments.length > 4) {
-      //     segments.length = 4;
-      //   }
-
-      //   value = segments.join(".");
-
-      //   event.target.value = value;
-      // });
     }
 
-    // IPv6 input mask
+    // ************** IPV6 input mask ************** //
     if (maskType === "IPv6") {
       if (maskChar === "" || maskChar === ":") {
         maskChar = "_";
@@ -449,7 +428,7 @@ document.addEventListener("DOMContentLoaded", function () {
       // });
     }
 
-    // Thousand input mask
+    // ************** Thousand input mask ************** //
     if (maskType === "thousand") {
       input.value = "0";
 
@@ -521,47 +500,59 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // ************** Currency input mask ************** //
+
     if (maskType === "currency") {
       input.value = "0.00";
 
-      input.addEventListener("keydown", function (event) {
-        // If the initial value is '0.00' and the entered key is a digit, replace the '0' with the entered digit
-        if (this.value === "0.00" && /\d/.test(event.key)) {
-          event.preventDefault();
-          // this.value = event.key + ".00";
-          this.value = `${maskCurrency}${event.key}.00`;
+      input.addEventListener("input", function (event) {
+        let value = input.value;
+
+        value = value.replace(/[^0-9.]/g, "");
+
+        let parts = value.split(".");
+        let integerPart = parts[0] || "0";
+        let decimalPart = parts[1] || "00";
+        let cursorPos = input.selectionStart;
+
+        if (integerPart.length > 1 && integerPart[0] === "0") {
+          integerPart = integerPart.slice(1);
+          input.setSelectionRange(cursorPos, cursorPos);
+          //   cursorPos--;
         }
+
+        if (integerPart.length > 21) {
+          integerPart = integerPart.slice(0, 21);
+        }
+
+        decimalPart = decimalPart.slice(0, 2);
+        console.log(decimalPart);
+
+        if (integerPart !== "0") {
+          integerPart = maskCurrency + integerPart;
+          //   cursorPos = 2;
+          //   input.setSelectionRange(cursorPos + 1, cursorPos + 1);
+        }
+
+        integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+        input.value = integerPart + "." + decimalPart.padEnd(2, "0");
+
+        console.log(cursorPos);
+        input.setSelectionRange(cursorPos, cursorPos);
       });
 
-      input.addEventListener("input", function (event) {
-        let value = event.target.value;
-
-        let numericValue = value.replace(/[^\d.]/g, "");
-        if (numericValue === "" || numericValue === maskCurrency) {
-          this.value = maskCurrency + "0.00";
-          return;
+      input.addEventListener("keydown", function (event) {
+        if (event.key === "Backspace") {
+          // Check if the cursor is immediately after the dot
+          if (input.selectionStart === input.value.indexOf(".") + 1) {
+            // If it is, move the cursor to the position before the dot
+            input.setSelectionRange(
+              input.selectionStart - 1,
+              input.selectionStart - 1
+            );
+            event.preventDefault();
+          }
         }
-        if (
-          numericValue.charAt(0) !== maskCurrency &&
-          numericValue !== maskCurrency
-        )
-          numericValue = `${maskCurrency} ${numericValue}`;
-
-        // Ensure only one decimal point is present
-        const parts = numericValue.split(".");
-        if (parts.length > 2) {
-          parts.pop();
-        }
-        if (parts[1] && parts[1].length > 2) {
-          parts[1] = parts[1].substring(0, 2);
-        }
-
-        // Add commas as thousand separators to the part before the decimal point
-        const groups = parts[0].match(/\d{1,3}(?=(\d{3})*(\D|$))/g);
-        parts[0] = groups ? groups.join(",") : "";
-
-        // Append the currency symbol to the numeric value
-        this.value = maskCurrency + parts.join(".");
       });
     }
   });
