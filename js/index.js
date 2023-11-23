@@ -541,10 +541,11 @@ document.addEventListener("DOMContentLoaded", function () {
           }
         }
 
-        // Set cursor position to the end of the formatted integer part
-        if (!isCursorInDecimalPart) {
-          cursorPos = integerPart.length;
-        }
+        // // Set cursor position to the end of the formatted integer part
+        // if (!isCursorInDecimalPart) {
+        //   cursorPos = integerPart.length;
+        // }
+        cursorPos = integerPart.length;
 
         input.setSelectionRange(cursorPos, cursorPos);
         console.log(cursorPos);
