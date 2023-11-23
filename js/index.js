@@ -516,12 +516,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (integerPart.length > 1 && integerPart[0] === "0") {
           integerPart = integerPart.slice(1);
-          input.setSelectionRange(cursorPos, cursorPos);
-          //   cursorPos--;
         }
 
         if (integerPart.length > 21) {
-          integerPart = integerPart.slice(0, 21);
+          integerPart = integerPart.slice(0, 25);
         }
 
         decimalPart = decimalPart.slice(0, 2);
@@ -529,16 +527,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (integerPart !== "0") {
           integerPart = maskCurrency + integerPart;
-          //   cursorPos = 2;
-          //   input.setSelectionRange(cursorPos + 1, cursorPos + 1);
         }
 
         integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
         input.value = integerPart + "." + decimalPart.padEnd(2, "0");
 
-        console.log(cursorPos);
+        let isCursorInDecimalPart = cursorPos > integerPart.length;
+
+        for (let i = 0; i < integerPart.length; i++) {
+          if (integerPart[i] === ",") {
+            cursorPos++;
+          }
+        }
+
+        // Set cursor position to the end of the formatted integer part
+        if (!isCursorInDecimalPart) {
+          cursorPos = integerPart.length;
+        }
+
         input.setSelectionRange(cursorPos, cursorPos);
+        console.log(cursorPos);
       });
 
       input.addEventListener("keydown", function (event) {
