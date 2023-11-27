@@ -506,6 +506,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
       input.addEventListener("input", function (event) {
         let value = input.value;
+
+        // value = value.replace(/^0+/, "");
+
         value = value.replace(/[^0-9.]/g, "");
 
         let parts = value.split(".");
@@ -513,6 +516,10 @@ document.addEventListener("DOMContentLoaded", function () {
         let decimalPart = parts[1] || "00";
 
         let cursorPos = input.selectionStart;
+
+        if (cursorPos === 1 && integerPart[1] === "0") {
+          integerPart = integerPart.slice(0, 1);
+        }
 
         if (integerPart.length > 1 && integerPart[0] === "0") {
           integerPart = integerPart.slice(1);
