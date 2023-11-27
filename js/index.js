@@ -506,12 +506,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
       input.addEventListener("input", function (event) {
         let value = input.value;
-
         value = value.replace(/[^0-9.]/g, "");
 
         let parts = value.split(".");
         let integerPart = parts[0] || "0";
         let decimalPart = parts[1] || "00";
+
         let cursorPos = input.selectionStart;
 
         if (integerPart.length > 1 && integerPart[0] === "0") {
@@ -522,33 +522,37 @@ document.addEventListener("DOMContentLoaded", function () {
           integerPart = integerPart.slice(0, 25);
         }
 
-        decimalPart = decimalPart.slice(0, 2);
-        console.log(decimalPart);
-
         if (integerPart !== "0") {
           integerPart = maskCurrency + integerPart;
         }
 
         integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
+        decimalPart = decimalPart.slice(0, 2);
+
         input.value = integerPart + "." + decimalPart.padEnd(2, "0");
 
         let isCursorInDecimalPart = cursorPos > integerPart.length;
 
-        for (let i = 0; i < integerPart.length; i++) {
-          if (integerPart[i] === ",") {
-            cursorPos++;
-          }
+        //   Set cursor position to the end of the formatted integer part
+        if (!isCursorInDecimalPart) {
+          console.log(`integer length: ${integerPart.length}`);
+          console.log(`cursor positon: ${cursorPos}`);
+
+          //   for (let i = 0; i < integerPart.length; i++) {
+          //     if (integerPart[i] === ",") {
+          //       cursorPos++;
+          //       //   cursorPos = integerPart.length + 1;
+          //     }
+          //   }
+          cursorPos = integerPart.length;
+        } else {
+          cursorPos;
+          console.log(`Cursor currently in decimal part`);
+          console.log(`cursor position: ${cursorPos}`);
         }
 
-        // // Set cursor position to the end of the formatted integer part
-        // if (!isCursorInDecimalPart) {
-        //   cursorPos = integerPart.length;
-        // }
-        cursorPos = integerPart.length;
-
         input.setSelectionRange(cursorPos, cursorPos);
-        console.log(cursorPos);
       });
 
       input.addEventListener("keydown", function (event) {
