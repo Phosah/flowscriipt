@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const maskType = input.getAttribute("fs-input-mask");
     let maskChar = input.getAttribute("fs-input-mask-char");
     let maskCurrency = input.getAttribute("fs-input-currency");
+    let maskCustom = input.getAttribute("fs-input-custom");
 
     // ************** Date input mask ************** //
     if (maskType === "date") {
@@ -181,25 +182,61 @@ document.addEventListener("DOMContentLoaded", function () {
       input.addEventListener("keydown", function (event) {
         if (event.key === "Backspace" || event.key === "Delete") {
           event.preventDefault();
-
           let pos = input.selectionStart;
           let newValue = input.value.split("");
           console.log(newValue);
 
           if (pos !== 0 && input.value[pos - 1] !== "-") {
             newValue[pos - 1] = maskChar;
+
             pos--;
           }
 
+          console.log(newValue);
           input.value = newValue.join("");
+          console.log(input.value);
           input.setSelectionRange(pos, pos);
         }
+
+        // if (event.key === "Backspace" || event.key === "Delete") {
+        //   event.preventDefault();
+        //   let pos = input.selectionStart;
+        //   let newValue = input.value.split("");
+        //   if (event.key === "Backspace" && pos !== 0) {
+        //     // Handle backspace key press
+        //     for (let i = pos - 1; i >= 0; i--) {
+        //       if (newValue[i] !== "-") {
+        //         newValue[i] = maskChar;
+        //         pos = i;
+        //         break;
+        //       }
+        //     }
+        //   } else if (event.key === "Delete" && pos !== input.value.length) {
+        //     // Handle delete key press
+        //     for (let i = pos; i < input.value.length; i++) {
+        //       if (newValue[i] !== "-") {
+        //         newValue[i] = maskChar;
+        //         break;
+        //       }
+        //     }
+        //   }
+        //   input.value = newValue.join("");
+        //   console.log(input.value);
+        //   input.setSelectionRange(pos, pos);
+        // }
       });
 
       input.addEventListener("input", function (event) {
+        console.log(input.value);
+        let currentValue = input.value;
+        console.log(event.target.value);
+
         const value = event.target.value
           .replace(new RegExp("\\" + maskChar, "g"), "")
           .replace(/[^a-zA-Z0-9]/g, "");
+
+        console.log(value);
+        console.log(currentValue);
 
         let formattedValue = maskChar.repeat(29).split("");
 
@@ -229,11 +266,9 @@ document.addEventListener("DOMContentLoaded", function () {
           input.setSelectionRange(nextUnderscoreIndex, nextUnderscoreIndex);
         }
 
-        console.log(event);
         console.log(`This is the value from input - ${event.target.value}`);
       });
     }
-
     // ************** IPV4 input mask ************** //
     if (maskType === "IPv4") {
       if (maskChar === "" || maskChar === ".") {
@@ -507,8 +542,6 @@ document.addEventListener("DOMContentLoaded", function () {
       input.addEventListener("input", function (event) {
         let value = input.value;
 
-        // value = value.replace(/^0+/, "");
-
         value = value.replace(/[^0-9.]/g, "");
 
         let parts = value.split(".");
@@ -573,6 +606,49 @@ document.addEventListener("DOMContentLoaded", function () {
             );
             event.preventDefault();
           }
+        }
+      });
+    }
+
+    // // ************** Custom input mask ************** //
+    // if (maskType === "custom") {
+    //   input.addEventListener("input", function (event) {
+    //     if (maskCustom === "0") {
+    //       const inputValue = event.target.value;
+    //       const numericValue = inputValue.replace(/[^0-9]/g, "");
+
+    //       if (numericValue.length <= maskCustom.length) {
+    //         input.value = numericValue;
+    //         console.log(input.value);
+    //       }
+    //     }
+    //   });
+
+    //   input.addEventListener("keydown", function (event) {});
+    // }
+
+    // ************** Custom input mask ************** //
+    if (maskType === "custom") {
+      input.addEventListener("keypress", function (event) {
+        const charCode = event.which ? event.which : event.keyCode;
+        if (charCode < 48 || charCode > 57) {
+          event.preventDefault();
+        }
+
+        // if (/\d/.test(event.key)) {
+        //   event.preventDefault();
+        //   this.value = event.key;
+        // }
+      });
+
+      input.addEventListener("input", function (event) {
+        const inputValue = event.target.value;
+        const numericValue = inputValue.replace(/[^0-9]/g, "");
+
+        if (numericValue.length > maskCustom.length) {
+          console.log(maskCustom.length);
+          input.value = numericValue.slice(0, maskCustom.length);
+          console.log(input.value);
         }
       });
     }
