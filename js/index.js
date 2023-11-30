@@ -610,47 +610,222 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     }
 
-    // // ************** Custom input mask ************** //
-    // if (maskType === "custom") {
-    //   input.addEventListener("input", function (event) {
-    //     if (maskCustom === "0") {
-    //       const inputValue = event.target.value;
-    //       const numericValue = inputValue.replace(/[^0-9]/g, "");
-
-    //       if (numericValue.length <= maskCustom.length) {
-    //         input.value = numericValue;
-    //         console.log(input.value);
-    //       }
-    //     }
-    //   });
-
-    //   input.addEventListener("keydown", function (event) {});
-    // }
-
     // ************** Custom input mask ************** //
     if (maskType === "custom") {
       input.addEventListener("keypress", function (event) {
         const charCode = event.which ? event.which : event.keyCode;
-        if (charCode < 48 || charCode > 57) {
-          event.preventDefault();
-        }
 
-        // if (/\d/.test(event.key)) {
-        //   event.preventDefault();
-        //   this.value = event.key;
-        // }
+        if (maskCustom === "0") {
+          // For digits only
+          if (charCode < 48 || charCode > 57) {
+            event.preventDefault();
+          }
+        }
       });
 
       input.addEventListener("input", function (event) {
         const inputValue = event.target.value;
-        const numericValue = inputValue.replace(/[^0-9]/g, "");
 
-        if (numericValue.length > maskCustom.length) {
-          console.log(maskCustom.length);
-          input.value = numericValue.slice(0, maskCustom.length);
+        // For digits only
+        if (maskCustom === "0") {
+          const numericValue = inputValue.replace(/[^0-9]/g, "");
+
+          if (numericValue.length > maskCustom.length) {
+            input.value = numericValue.slice(0, maskCustom.length);
+            console.log(input.value);
+          }
+        }
+
+        // For Alphabets only
+        else if (maskCustom === "L") {
+          const alphaValue = inputValue.replace(/[^a-zA-Z]/g, "");
+          console.log(alphaValue);
+          input.value = alphaValue;
+          console.log(input.value);
+        }
+
+        // For Digit or space, optional, Plus(+) and minus(-) signs are allowed.
+        else if (maskCustom === "#") {
+          const validValue = inputValue.replace(/[^0-9+\- ]/g, "");
+          input.value = validValue;
+          console.log(input.value);
+        }
+
+        // For Digit or space, optional.
+        else if (maskCustom === "9") {
+          const validValue = inputValue.replace(/[^0-9 ]/g, "");
+          input.value = validValue;
+          console.log(input.value);
+        }
+
+        // Alphanumeric (A-Za-z0-9) required.
+        else if (maskCustom === "A") {
+          const validValue = inputValue.replace(/[^a-zA-Z0-9]/g, "");
+          input.value = validValue;
+          console.log(input.value);
+        }
+
+        // Letter or space, optional
+        else if (maskCustom === "?") {
+          const validValue = inputValue.replace(/[^a-zA-Z ]/g, "");
+          input.value = validValue;
+          console.log(input.value);
+        }
+
+        // Requires a character.
+        else if (maskCustom === "&") {
+          const validValue = inputValue.trim();
+          input.value = validValue;
+          console.log(input.value);
+        }
+
+        // Character or space, optional
+        else if (maskCustom === "C") {
+          input.value = inputValue;
+          console.log(input.value);
+        }
+
+        // Alphanumeric (A-Za-z0-9) or space, optional.
+        else if (maskCustom === "a") {
+          const validValue = inputValue.replace(/[^a-zA-Z0-9 ]/g, "");
+          input.value = validValue;
+          console.log(input.value);
+        }
+
+        // Shift down. Converts all characters to lower case.
+        else if (maskCustom === "<") {
+          const lowercaseValue = inputValue.toLowerCase();
+          input.value = lowercaseValue;
+          console.log(input.value);
+        }
+
+        // Shift up. Converts all characters to upper case.
+        else if (maskCustom === ">") {
+          input.value = inputValue.toUpperCase();
+          console.log(input.value);
+        }
+
+        // Escapes a mask character, turning it into a literal.
+        else if (maskCustom === "\\") {
+          console.log(input.value);
+        }
+
+        // Disable a previous shift up or shift down.
+        else if (maskCustom === "|") {
           console.log(input.value);
         }
       });
     }
+
+    // Using if statements to seperate concerns
+    // ************** Custom input mask ************** //
+    // if (maskType === "custom") {
+    //   input.addEventListener("keypress", function (event) {
+    //     const charCode = event.which ? event.which : event.keyCode;
+
+    //     if (maskCustom === "0") {
+    //       if (charCode < 48 || charCode > 57) {
+    //         event.preventDefault();
+    //       }
+    //     }
+    //   });
+
+    //   input.addEventListener("input", function (event) {
+    //     const inputValue = event.target.value;
+
+    //     // For digits only
+    //     if (maskCustom === "0") {
+    //       const inputValue = event.target.value;
+    //       const numericValue = inputValue.replace(/[^0-9]/g, "");
+
+    //       if (numericValue.length > maskCustom.length) {
+    //         console.log(maskCustom.length);
+    //         input.value = numericValue.slice(0, maskCustom.length);
+    //         console.log(input.value);
+    //       }
+    //     }
+
+    //     // For Alphabets only
+    //     if (maskCustom === "L") {
+    //       const inputValue = event.target.value;
+    //       const newValue = inputValue.replace(/[a-zA-Z]/.test(event.key));
+    //       console.log(newValue);
+    //     }
+
+    //     // For Digit or space, optional, Plus(+) and minus(-) signs are allowed.
+    //     if (maskCustom === "#") {
+    //       const inputValue = event.target.value;
+    //       // const newValue = inputValue.replace(/[a-zA-Z]/.test(event.key))
+    //       console.log(inputValue);
+    //     }
+
+    //     // For Digit or space, optional.
+    //     if (maskCustom === "9") {
+    //       const inputValue = event.target.value;
+    //       // const newValue = inputValue.replace(/[a-zA-Z]/.test(event.key))
+    //       console.log(inputValue);
+    //     }
+
+    //     // Alphanumeric (A-Za-z0-9) required.
+    //     if (maskCustom === "A") {
+    //       const inputValue = event.target.value;
+    //       // const newValue = inputValue.replace(/[a-zA-Z]/.test(event.key))
+    //       console.log(inputValue);
+    //     }
+    //   });
+    // }
+
+    // This works for only 0 input
+    // // ************** Custom input mask ************** //
+    // if (maskType === "custom") {
+    //   input.addEventListener("keypress", function (event) {
+    //     const charCode = event.which ? event.which : event.keyCode;
+    //     if (charCode < 48 || charCode > 57) {
+    //       event.preventDefault();
+    //     }
+    //   });
+
+    //   input.addEventListener("input", function (event) {
+    //     const inputValue = event.target.value;
+    //     const numericValue = inputValue.replace(/[^0-9]/g, "");
+
+    //     if (numericValue.length > maskCustom.length) {
+    //       console.log(maskCustom.length);
+    //       input.value = numericValue.slice(0, maskCustom.length);
+    //       console.log(input.value);
+    //     }
+    //   });
+    // }
+
+    // This works for 0 and L but just one input.
+    // // ************** Custom input mask ************** //
+    // if (maskType === "custom") {
+    //   const maskCustom = input.getAttribute("fs-input-custom");
+
+    //   input.addEventListener("keypress", function (event) {
+    //     const charCode = event.which ? event.which : event.keyCode;
+    //     if (maskCustom === "0" && (charCode < 48 || charCode > 57)) {
+    //       event.preventDefault();
+    //     } else if (maskCustom === "L" && !/[a-zA-Z]/.test(event.key)) {
+    //       event.preventDefault();
+    //     }
+    //   });
+
+    //   input.addEventListener("input", function (event) {
+    //     const inputValue = event.target.value;
+    //     let numericValue = inputValue.replace(/[^0-9]/g, "");
+
+    //     if (maskCustom === "0" && numericValue.length > 1) {
+    //       input.value = numericValue.slice(0, 1);
+    //       console.log(input.value);
+    //     } else if (
+    //       maskCustom === "L" &&
+    //       inputValue.length > maskCustom.length
+    //     ) {
+    //       input.value = inputValue.slice(0, maskCustom.length);
+    //       console.log(input.value);
+    //     }
+    //   });
+    // }
   });
 });
