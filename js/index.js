@@ -611,51 +611,201 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // ************** Custom input mask ************** //
-    if (maskType === "custom") {
-      input.addEventListener("input", function (event) {
-        const originalInputValue = event.target.value;
+    // if (maskType === "custom") {
+    //   input.addEventListener("input", function (event) {
+    //     const originalInputValue = event.target.value;
 
-        const handlers = {
-          0: function (inputValue, maxLength) {
-            const numericValue = inputValue.replace(/[^0-9]/g, "");
-            return numericValue.length > maxLength
-              ? numericValue.slice(0, maxLength)
-              : numericValue;
-          },
+    //     const handlers = {
+    //       // For digits only
+    //       0: function (inputValue, maxLength) {
+    //         const numericValue = inputValue
+    //           ? inputValue.replace(/[^0-9]/g, "")
+    //           : "";
+    //         return numericValue.length > maxLength
+    //           ? numericValue.slice(0, maxLength)
+    //           : numericValue;
+    //       },
 
-          L: function (inputValue, maxLength) {
-            const alphaValue = inputValue.replace(/[^a-zA-Z]/g, "");
-            return alphaValue.length > maxLength
-              ? alphaValue.slice(0, maxLength)
-              : alphaValue;
-          },
+    //       // For Alphabets only
+    //       L: function (inputValue, maxLength) {
+    //         const alphaValue = inputValue
+    //           ? inputValue.replace(/[^a-zA-Z]/g, "")
+    //           : "";
+    //         return alphaValue.length > maxLength
+    //           ? alphaValue.slice(0, maxLength)
+    //           : alphaValue;
+    //       },
 
-          "#": function (inputValue, maxLength) {
-            const validValue = inputValue.replace(/[^0-9+\- ]/g, "");
-            return validValue.length > maxLength
-              ? validValue.slice(0, maxLength)
-              : validValue;
-          },
-        };
+    //       // For Digit or space, optional, Plus(+) and minus(-) signs are allowed.
+    //       "#": function (inputValue, maxLength) {
+    //         const validValue = inputValue
+    //           ? inputValue.replace(/[^0-9+\- ]/g, "")
+    //           : "";
+    //         return validValue.length > maxLength
+    //           ? validValue.slice(0, maxLength)
+    //           : validValue;
+    //       },
 
-        let currentValue = originalInputValue;
-        // let currentValue = input.value;
+    //       // For Digit or space, optional.
+    //       9: function (inputValue, maxLength) {
+    //         const validValue = inputValue
+    //           ? inputValue.replace(/[^0-9 ]/g, "")
+    //           : "";
+    //         return validValue.length > maxLength
+    //           ? validValue.slice(0, maxLength)
+    //           : validValue;
+    //       },
 
-        for (let char of maskCustom) {
-          if (handlers[char]) {
-            console.log(currentValue);
-            currentValue = handlers[char](currentValue, maskCustom.length);
-          }
-        }
+    //       // Alphanumeric (A-Za-z0-9) required.
+    //       A: function (inputValue, maxLength) {
+    //         const validValue = inputValue
+    //           ? inputValue.replace(/[^a-zA-Z0-9]/g, "")
+    //           : "";
+    //         return validValue.length > maxLength
+    //           ? validValue.slice(0, maxLength)
+    //           : validValue;
+    //       },
 
-        console.log(`maskCustom: ${maskCustom}`);
-        console.log(`currentValue: ${currentValue}`);
+    //       // Letter or space, optional
+    //       "?": function (inputValue, maxLength) {
+    //         const validValue = inputValue
+    //           ? inputValue.replace(/[^a-zA-Z ]/g, "")
+    //           : "";
+    //         return validValue.length > maxLength
+    //           ? validValue.slice(0, maxLength)
+    //           : validValue;
+    //       },
 
-        input.value = currentValue;
-        console.log(`This is the final input: ${input.value}`);
-      });
-    }
+    //       // Requires a character.
+    //       "&": function (inputValue, maxLength) {
+    //         const validValue = inputValue ? inputValue.trim() : "";
+    //         return validValue.length > maxLength
+    //           ? validValue.slice(0, maxLength)
+    //           : validValue;
+    //       },
 
+    //       // Character or space, optional
+    //       C: function (inputValue, maxLength) {
+    //         const validValue = inputValue ? inputValue : "";
+    //         return validValue.length > maxLength
+    //           ? validValue.slice(0, maxLength)
+    //           : validValue;
+    //       },
+
+    //       // Alphanumeric (A-Za-z0-9) or space, optional.
+    //       a: function (inputValue, maxLength) {
+    //         const validValue = inputValue
+    //           ? inputValue.replace(/[^a-zA-Z0-9 ]/g, "")
+    //           : "";
+    //         return validValue.length > maxLength
+    //           ? validValue.slice(0, maxLength)
+    //           : validValue;
+    //       },
+
+    //       // Shift down. Converts all characters to lower case.
+    //       "<": function (inputValue, maxLength) {
+    //         const lettersOnly = inputValue
+    //           ? inputValue.replace(/[^a-zA-Z]/g, "")
+    //           : "";
+    //         const lowercaseValue = lettersOnly.toLowerCase();
+
+    //         return lowercaseValue.length > maxLength
+    //           ? lowercaseValue.slice(0, maxLength)
+    //           : lowercaseValue;
+    //       },
+
+    //       // Shift down. Converts all characters to upper case.
+    //       ">": function (inputValue, maxLength) {
+    //         const lettersOnly = inputValue
+    //           ? inputValue.replace(/[^a-zA-Z]/g, "")
+    //           : "";
+    //         const uppercaseValue = lettersOnly.toUpperCase();
+
+    //         return uppercaseValue.length > maxLength
+    //           ? uppercaseValue.slice(0, maxLength)
+    //           : uppercaseValue;
+    //       },
+
+    //       //     // Escapes a mask character, turning it into a literal.
+    //       //     else if (maskCustom === "\\") {
+    //       //       console.log(input.value);
+    //       //     }
+
+    //       //     // Disable a previous shift up or shift down.
+    //       //     else if (maskCustom === "|") {
+    //       //       console.log(input.value);
+    //       //     }
+    //       //   });
+    //       // }
+    //     };
+
+    //     let currentValue = "";
+    //     let currentIndex = 0;
+
+    //     // for (let i = 0; i <= maskCustom.length; i++) {
+    //     //   const char = maskCustom[i];
+    //     //   if (handlers[char]) {
+    //     //     currentValue += handlers[char](originalInputValue[currentIndex]);
+    //     //     currentIndex++;
+    //     //   }
+    //     // }
+
+    //     for (let char of maskCustom) {
+    //       if (handlers[char]) {
+    //         currentValue += handlers[char](originalInputValue[currentIndex]);
+    //         currentIndex++;
+    //       }
+    //     }
+
+    //     input.value = currentValue;
+    //     console.log(`This is the final input: ${input.value}`);
+    //   });
+    // }
+
+    // ///////////////////////////////////////////
+    // ///////////////This code works!!!!//////////
+    // ///////////////////////////////////////////
+
+    // ************** Custom input mask ************** //
+    // if (maskType === "custom") {
+    //   input.addEventListener("input", function (event) {
+    //     const originalInputValue = event.target.value;
+
+    //     const handlers = {
+    //       0: function (char) {
+    //         return char && char.match(/[0-9]/) ? char : "";
+    //       },
+
+    //       L: function (char) {
+    //         return char && char.match(/[a-zA-Z]/) ? char : "";
+    //       },
+
+    //       "#": function (char) {
+    //         return char && char.match(/[0-9+\- ]/) ? char : "";
+    //       },
+    //     };
+
+    //     let currentValue = "";
+    //     let i = 0;
+
+    //     for (let char of maskCustom) {
+    //       if (handlers[char]) {
+    //         currentValue += handlers[char](originalInputValue[i]) || "";
+    //         i += 1;
+    //       } else {
+    //         // currentValue += char;
+    //         console.log(char);
+    //       }
+    //     }
+
+    //     console.log(`currentValue: ${currentValue}`);
+    //     input.value = currentValue;
+    //   });
+    // }
+
+    // ///////////////////////////////////////////
+    // ///////////////This code works for single characters!!!!//////////
+    // ///////////////////////////////////////////
     // ************** Custom input mask ************** //
     // if (maskType === "custom") {
     //   input.addEventListener("keypress", function (event) {
