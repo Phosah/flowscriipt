@@ -726,6 +726,11 @@ document.addEventListener("DOMContentLoaded", function () {
               : uppercaseValue;
           },
 
+          // For '/' character
+          "/": function (inputValue, maxLength) {
+            return inputValue === "/" ? "/" : "";
+          },
+
           //     // Escapes a mask character, turning it into a literal.
           //     else if (maskCustom === "\\") {
           //       console.log(input.value);
