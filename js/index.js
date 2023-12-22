@@ -92,14 +92,12 @@ document.addEventListener("DOMContentLoaded", function () {
         ) {
           day = day.charAt(0) + "1";
           formattedValue[1] = day.charAt(1);
-          console.log(`${day.charAt(1)} is greater than 1`);
         } else {
           formattedValue[0] = day.charAt(0);
           formattedValue[1] = day.charAt(1);
         }
 
         // Month formatting
-        console.log(`month - ${month}`);
         let newMonth = month;
         if (parseInt(month.charAt(0)) > 1) {
           newMonth = "0" + month.charAt(1);
@@ -190,9 +188,18 @@ document.addEventListener("DOMContentLoaded", function () {
       input.addEventListener("keydown", function (event) {
         if (event.key === "Backspace" || event.key === "Delete") {
           event.preventDefault();
+
           let pos = input.selectionStart;
           let newValue = input.value.split("");
           console.log(newValue);
+
+          if (
+            event.key === "Backspace" &&
+            pos !== 0 &&
+            input.value[pos - 1] === "-"
+          ) {
+            pos--;
+          }
 
           if (pos !== 0 && input.value[pos - 1] !== "-") {
             newValue[pos - 1] = maskChar;
@@ -200,9 +207,7 @@ document.addEventListener("DOMContentLoaded", function () {
             pos--;
           }
 
-          console.log(newValue);
           input.value = newValue.join("");
-          console.log(input.value);
           input.setSelectionRange(pos, pos);
         }
 
@@ -296,7 +301,6 @@ document.addEventListener("DOMContentLoaded", function () {
           }
         })
         .join("");
-      console.log(input.value);
 
       input.addEventListener("keydown", function (event) {
         if (event.key === "Backspace" || event.key === "Delete") {
@@ -304,7 +308,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
           let pos = input.selectionStart;
           let newValue = input.value.split("");
-          console.log(newValue);
+
+          if (
+            event.key === "Backspace" &&
+            pos !== 0 &&
+            input.value[pos - 1] === "."
+          ) {
+            pos--;
+          }
 
           if (pos !== 0 && input.value[pos - 1] !== ".") {
             newValue[pos - 1] = maskChar;
@@ -385,7 +396,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
           let pos = input.selectionStart;
           let newValue = input.value.split("");
-          console.log(newValue);
+
+          if (
+            event.key === "Backspace" &&
+            pos !== 0 &&
+            input.value[pos - 1] === ":"
+          ) {
+            pos--;
+          }
 
           if (pos !== 0 && input.value[pos - 1] !== ":") {
             newValue[pos - 1] = maskChar;
