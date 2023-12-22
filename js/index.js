@@ -32,6 +32,14 @@ document.addEventListener("DOMContentLoaded", function () {
           let pos = input.selectionStart;
           let newValue = input.value.split("");
 
+          if (
+            event.key === "Backspace" &&
+            pos !== 0 &&
+            input.value[pos - 1] === "/"
+          ) {
+            pos--;
+          }
+
           if (pos !== 0 && input.value[pos - 1] !== "/") {
             newValue[pos - 1] = maskChar;
             pos--;
@@ -269,6 +277,7 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log(`This is the value from input - ${event.target.value}`);
       });
     }
+
     // ************** IPV4 input mask ************** //
     if (maskType === "IPv4") {
       if (maskChar === "" || maskChar === ".") {
