@@ -186,19 +186,21 @@ document.addEventListener("DOMContentLoaded", function () {
         .join("");
 
       input.addEventListener("keydown", function (event) {
+        let pos = input.selectionStart;
+
         if (event.key === "Backspace" || event.key === "Delete") {
           event.preventDefault();
 
-          let pos = input.selectionStart;
           let newValue = input.value.split("");
           console.log(newValue);
 
-          if (
-            event.key === "Backspace" &&
-            pos !== 0 &&
-            input.value[pos - 1] === "-"
-          ) {
-            pos--;
+          if (event.key === "Backspace" && pos > 0) {
+            if (
+              input.value[pos - 1] === "-" ||
+              input.value[pos - 1] === maskChar
+            ) {
+              pos--;
+            }
           }
 
           if (pos !== 0 && input.value[pos - 1] !== "-") {
@@ -209,64 +211,78 @@ document.addEventListener("DOMContentLoaded", function () {
 
           input.value = newValue.join("");
           input.setSelectionRange(pos, pos);
-        }
 
-        // if (event.key === "Backspace" || event.key === "Delete") {
-        //   event.preventDefault();
-        //   let pos = input.selectionStart;
-        //   let newValue = input.value.split("");
-        //   if (event.key === "Backspace" && pos !== 0) {
-        //     // Handle backspace key press
-        //     for (let i = pos - 1; i >= 0; i--) {
-        //       if (newValue[i] !== "-") {
-        //         newValue[i] = maskChar;
-        //         pos = i;
-        //         break;
-        //       }
-        //     }
-        //   } else if (event.key === "Delete" && pos !== input.value.length) {
-        //     // Handle delete key press
-        //     for (let i = pos; i < input.value.length; i++) {
-        //       if (newValue[i] !== "-") {
-        //         newValue[i] = maskChar;
-        //         break;
-        //       }
-        //     }
-        //   }
-        //   input.value = newValue.join("");
-        //   console.log(input.value);
-        //   input.setSelectionRange(pos, pos);
-        // }
+          console.log(`Final input value: ${input.value}`);
+        }
       });
 
-      input.addEventListener("input", function (event) {
-        console.log(input.value);
-        let currentValue = input.value;
+      // input.addEventListener("input", function (event) {
+      //   console.log(`This is event target value: ${event.target.value}`);
+
+      //   let value = event.target.value.replace(
+      //     new RegExp(`[^a-zA-Z0-9\\${maskChar}]`, "g"),
+      //     ""
+      //   );
+
+      //   console.log(`This is event new value: ${value}`);
+
+      //   let formattedValue = maskChar.repeat(10).split("");
+      //   let pos = input.selectionStart;
+      //   // pos = pos > 0 ? pos - 1 : pos;
+
+      //   formattedValue[3] = "-";
+      //   formattedValue[7] = "-";
+
+      //   for (
+      //     let i = 0, j = 0;
+      //     i < value.length && j < formattedValue.length;
+      //     j++
+      //   ) {
+      //     if (j === 3 || j === 7) {
+      //       formattedValue[j] = "-";
+      //     } else {
+      //       formattedValue[j] = value[i] || "";
+      //       // formattedValue[j] = value[i] || maskChar;
+      //       i++;
+      //     }
+      //   }
+
+      //   input.value = formattedValue.join("").slice(0, 10);
+      //   input.setSelectionRange(pos, pos);
+      // });
+
+      input.addEventListener("keypress", function (event) {
         console.log(event.target.value);
 
-        const value = event.target.value
-          .replace(new RegExp("\\" + maskChar, "g"), "")
-          .replace(/[^a-zA-Z0-9]/g, "");
-
-        console.log(value);
-        console.log(currentValue);
+        const value = event.target.value.replace(
+          new RegExp(`[^a-zA-Z0-9\\${maskChar}]`, "g"),
+          ""
+        );
 
         let formattedValue = maskChar.repeat(29).split("");
-
         formattedValue[5] = "-";
         formattedValue[11] = "-";
         formattedValue[17] = "-";
         formattedValue[23] = "-";
 
-        for (
-          let i = 0, j = 0;
-          i < value.length && j < formattedValue.length;
-          j++
-        ) {
+        // for (
+        //   let i = 0, j = 0;
+        //   i < value.length && j < formattedValue.length;
+        //   j++
+        // ) {
+        //   if (j === 5 || j === 11 || j === 17 || j === 23) {
+        //     // formattedValue[j] = "-";
+        //     continue;
+        //   } else {
+        //     formattedValue[j] = value[i++];
+        //   }
+        // }
+
+        let i = 0;
+        for (let j = 0; j < formattedValue.length; j++) {
           if (j === 5 || j === 11 || j === 17 || j === 23) {
-            // formattedValue[j] = "-";
             continue;
-          } else {
+          } else if (value[i]) {
             formattedValue[j] = value[i++];
           }
         }
@@ -278,8 +294,6 @@ document.addEventListener("DOMContentLoaded", function () {
         if (nextUnderscoreIndex !== -1) {
           input.setSelectionRange(nextUnderscoreIndex, nextUnderscoreIndex);
         }
-
-        console.log(`This is the value from input - ${event.target.value}`);
       });
     }
 
@@ -388,7 +402,7 @@ document.addEventListener("DOMContentLoaded", function () {
           }
         })
         .join("");
-      console.log(input.value);
+      // console.log(input.value);
 
       input.addEventListener("keydown", function (event) {
         if (event.key === "Backspace" || event.key === "Delete") {
@@ -987,5 +1001,126 @@ document.addEventListener("DOMContentLoaded", function () {
     //     }
     //   });
     // }
+
+    // ************** Test input mask ************** //
+    if (maskType === "test") {
+      if (maskChar === "") {
+        maskChar = "_";
+      }
+
+      input.value = maskChar.repeat(4);
+
+      // input.value = input.value
+      //   .split("")
+      //   .map((char, index) => {
+      //     if (index === 0) {
+      //       return "-";
+      //     } else {
+      //       return char;
+      //     }
+      //   })
+      //   .join("");
+
+      input.addEventListener("keydown", function (event) {
+        let pos = input.selectionStart;
+        console.log(`position: ${pos}`);
+
+        if (event.key === "Backspace" || event.key === "Delete") {
+          event.preventDefault();
+
+          let newValue = input.value.split("");
+          console.log(newValue);
+
+          if (event.key === "Backspace" && pos > 0) {
+            if (
+              input.value[pos - 1] === "-" ||
+              input.value[pos - 1] === maskChar
+            ) {
+              pos--;
+            }
+          }
+
+          if (pos !== 0 && input.value[pos - 1] !== "-") {
+            newValue[pos - 1] = maskChar;
+
+            pos--;
+
+            console.log(`Not in the same pos as '-'`);
+          }
+
+          input.value = newValue.join("");
+          input.setSelectionRange(pos, pos);
+
+          console.log(`Final input value: ${input.value}`);
+        }
+      });
+
+      // input.addEventListener("input", function (event) {
+      //   let value = event.target.value;
+      //   console.log(`initial value: ${value}`);
+
+      //   value = event.target.value.replace(
+      //     new RegExp(`[^a-zA-Z0-9\\${maskChar}]`, "g"),
+      //     ""
+      //   );
+      //   console.log(`Value after Regex: ${value}`);
+
+      //   let formattedValue = maskChar.repeat(4).split("");
+
+      //   for (
+      //     let i = 0, j = 0;
+      //     i < value.length && j < formattedValue.length;
+      //     j++
+      //   ) {
+      //     console.log(`formatted value: ${formattedValue}`);
+      //   }
+
+      //   // input.value = formattedValue;
+      //   input.value = value;
+
+      //   // Find the position of the next underscore and set the cursor position to that index
+      //   let nextUnderscoreIndex = input.value.indexOf(maskChar);
+      //   if (nextUnderscoreIndex !== -1) {
+      //     input.setSelectionRange(nextUnderscoreIndex, nextUnderscoreIndex);
+      //   }
+
+      // });
+
+      input.addEventListener("input", function (event) {
+        let value = event.target.value;
+        console.log(`initial value: ${value}`);
+
+        value = value.replace(new RegExp(`[^a-zA-Z0-9\\${maskChar}]`, "g"), "");
+        console.log(`Value after Regex: ${value}`);
+
+        let cursorPosition = input.selectionStart;
+        let valueArray = value.split("");
+
+        // Replace the mask character at the current cursor position with the entered input
+        console.log(event.key);
+        console.log(event);
+        console.log(cursorPosition);
+        if (
+          cursorPosition < valueArray.length &&
+          valueArray[cursorPosition] === maskChar
+        ) {
+          valueArray[cursorPosition] = event.key;
+        }
+
+        value = valueArray.join("");
+        input.value = value;
+
+        // Set the cursor position to the next mask character
+        let nextMaskCharIndex = value.indexOf(maskChar, cursorPosition);
+        if (nextMaskCharIndex !== -1) {
+          input.setSelectionRange(nextMaskCharIndex, nextMaskCharIndex);
+        } else {
+          // If no more mask characters are found, set the cursor to the end
+          input.setSelectionRange(value.length, value.length);
+        }
+
+        console.log(`final value: ${value}`);
+      });
+    }
   });
 });
