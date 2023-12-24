@@ -1008,20 +1008,26 @@ document.addEventListener("DOMContentLoaded", function () {
         maskChar = "_";
       }
 
-      input.value = maskChar.repeat(4);
+      input.value = maskChar.repeat(8);
 
-      // input.value = input.value
-      //   .split("")
-      //   .map((char, index) => {
-      //     if (index === 0) {
-      //       return "-";
-      //     } else {
-      //       return char;
-      //     }
-      //   })
-      //   .join("");
+      input.value = input.value
+        .split("")
+        .map((char, index) => {
+          if (index === 3) {
+            return "-";
+          } else {
+            return char;
+          }
+        })
+        .join("");
 
       input.addEventListener("keydown", function (event) {
+        // Prevent '-' from being typed
+        if (event.key === "-") {
+          event.preventDefault();
+          return;
+        }
+
         let pos = input.selectionStart;
         console.log(`position: ${pos}`);
 
@@ -1055,48 +1061,25 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       });
 
-      // input.addEventListener("input", function (event) {
-      //   let value = event.target.value;
-      //   console.log(`initial value: ${value}`);
-
-      //   value = event.target.value.replace(
-      //     new RegExp(`[^a-zA-Z0-9\\${maskChar}]`, "g"),
-      //     ""
-      //   );
-      //   console.log(`Value after Regex: ${value}`);
-
-      //   let formattedValue = maskChar.repeat(4).split("");
-
-      //   for (
-      //     let i = 0, j = 0;
-      //     i < value.length && j < formattedValue.length;
-      //     j++
-      //   ) {
-      //     console.log(`formatted value: ${formattedValue}`);
-      //   }
-
-      //   // input.value = formattedValue;
-      //   input.value = value;
-
-      //   // Find the position of the next underscore and set the cursor position to that index
-      //   let nextUnderscoreIndex = input.value.indexOf(maskChar);
-      //   if (nextUnderscoreIndex !== -1) {
-      //     input.setSelectionRange(nextUnderscoreIndex, nextUnderscoreIndex);
-      //   }
-
-      // });
-
       input.addEventListener("input", function (event) {
         let value = event.target.value;
         console.log(`initial value: ${value}`);
 
-        value = value.replace(new RegExp(`[^a-zA-Z0-9\\${maskChar}]`, "g"), "");
+        value = value.replace(
+          new RegExp(`[^a-zA-Z0-9\\-${maskChar}]`, "g"),
+          ""
+        );
         console.log(`Value after Regex: ${value}`);
+
+        // if (event.key === "-" || event.data === "-") {
+        //   return;
+        // }
 
         let cursorPosition = input.selectionStart;
         let valueArray = value.split("");
 
         // Replace the mask character at the current cursor position with the entered input
+        console.log(event.data);
         console.log(event.key);
         console.log(event);
         console.log(cursorPosition);
@@ -1105,10 +1088,11 @@ document.addEventListener("DOMContentLoaded", function () {
           valueArray[cursorPosition] === maskChar
         ) {
           valueArray[cursorPosition] = event.key;
+          // valueArray[cursorPosition] = event.data;
         }
 
         value = valueArray.join("");
-        input.value = value;
+        input.value = value.slice(0, 8);
 
         // Set the cursor position to the next mask character
         let nextMaskCharIndex = value.indexOf(maskChar, cursorPosition);
