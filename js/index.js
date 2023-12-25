@@ -186,13 +186,17 @@ document.addEventListener("DOMContentLoaded", function () {
         .join("");
 
       input.addEventListener("keydown", function (event) {
+        // if (event.key === "-") {
+        //   event.preventDefault();
+        //   return;
+        // }
+
         let pos = input.selectionStart;
 
         if (event.key === "Backspace" || event.key === "Delete") {
           event.preventDefault();
 
           let newValue = input.value.split("");
-          console.log(newValue);
 
           if (event.key === "Backspace" && pos > 0) {
             if (
@@ -211,90 +215,84 @@ document.addEventListener("DOMContentLoaded", function () {
 
           input.value = newValue.join("");
           input.setSelectionRange(pos, pos);
-
-          console.log(`Final input value: ${input.value}`);
+        } else if (
+          !/^[a-zA-Z\d]$/.test(event.key) &&
+          event.key !== maskChar &&
+          ![37, 38, 39, 40].includes(event.keyCode)
+        ) {
+          event.preventDefault();
         }
       });
 
+      input.addEventListener("input", function (event) {
+        let value = event.target.value;
+
+        value = value.replace(
+          new RegExp(`[^a-zA-Z0-9\\-${maskChar}]`, "g"),
+          ""
+        );
+
+        let cursorPosition = input.selectionStart;
+        let valueArray = value.split("");
+
+        // Replace the mask character at the current cursor position with the entered input
+        if (
+          cursorPosition < valueArray.length &&
+          valueArray[cursorPosition] === maskChar
+        ) {
+          valueArray[cursorPosition] = event.key;
+          // valueArray[cursorPosition] = event.data;
+        }
+
+        value = valueArray.join("");
+        input.value = value.slice(0, 29);
+
+        // Set the cursor position to the next mask character
+        let nextMaskCharIndex = value.indexOf(maskChar, cursorPosition);
+        if (nextMaskCharIndex !== -1) {
+          input.setSelectionRange(nextMaskCharIndex, nextMaskCharIndex);
+        } else {
+          // If no more mask characters are found, set the cursor to the end
+          input.setSelectionRange(value.length, value.length);
+        }
+      });
+
+      // \// // Older input listener with replacing character in exact position issues
+      // /// ///
+
       // input.addEventListener("input", function (event) {
-      //   console.log(`This is event target value: ${event.target.value}`);
+      //   const value = event.target.value
+      //     .replace(new RegExp("\\" + maskChar, "g"), "")
+      //     .replace(/[^a-zA-Z0-9]/g, "");
 
-      //   let value = event.target.value.replace(
-      //     new RegExp(`[^a-zA-Z0-9\\${maskChar}]`, "g"),
-      //     ""
-      //   );
+      //   let formattedValue = maskChar.repeat(29).split("");
 
-      //   console.log(`This is event new value: ${value}`);
-
-      //   let formattedValue = maskChar.repeat(10).split("");
-      //   let pos = input.selectionStart;
-      //   // pos = pos > 0 ? pos - 1 : pos;
-
-      //   formattedValue[3] = "-";
-      //   formattedValue[7] = "-";
+      //   formattedValue[5] = "-";
+      //   formattedValue[11] = "-";
+      //   formattedValue[17] = "-";
+      //   formattedValue[23] = "-";
 
       //   for (
       //     let i = 0, j = 0;
       //     i < value.length && j < formattedValue.length;
       //     j++
       //   ) {
-      //     if (j === 3 || j === 7) {
-      //       formattedValue[j] = "-";
+      //     if (j === 5 || j === 11 || j === 17 || j === 23) {
+      //       // formattedValue[j] = "-";
+      //       continue;
       //     } else {
-      //       formattedValue[j] = value[i] || "";
-      //       // formattedValue[j] = value[i] || maskChar;
-      //       i++;
+      //       formattedValue[j] = value[i++];
       //     }
       //   }
 
-      //   input.value = formattedValue.join("").slice(0, 10);
-      //   input.setSelectionRange(pos, pos);
+      //   input.value = formattedValue.join("").slice(0, 29);
+
+      //   // Find the position of the next underscore and set the cursor position to that index
+      //   let nextUnderscoreIndex = input.value.indexOf(maskChar);
+      //   if (nextUnderscoreIndex !== -1) {
+      //     input.setSelectionRange(nextUnderscoreIndex, nextUnderscoreIndex);
+      //   }
       // });
-
-      input.addEventListener("keypress", function (event) {
-        console.log(event.target.value);
-
-        const value = event.target.value.replace(
-          new RegExp(`[^a-zA-Z0-9\\${maskChar}]`, "g"),
-          ""
-        );
-
-        let formattedValue = maskChar.repeat(29).split("");
-        formattedValue[5] = "-";
-        formattedValue[11] = "-";
-        formattedValue[17] = "-";
-        formattedValue[23] = "-";
-
-        // for (
-        //   let i = 0, j = 0;
-        //   i < value.length && j < formattedValue.length;
-        //   j++
-        // ) {
-        //   if (j === 5 || j === 11 || j === 17 || j === 23) {
-        //     // formattedValue[j] = "-";
-        //     continue;
-        //   } else {
-        //     formattedValue[j] = value[i++];
-        //   }
-        // }
-
-        let i = 0;
-        for (let j = 0; j < formattedValue.length; j++) {
-          if (j === 5 || j === 11 || j === 17 || j === 23) {
-            continue;
-          } else if (value[i]) {
-            formattedValue[j] = value[i++];
-          }
-        }
-
-        input.value = formattedValue.join("").slice(0, 29);
-
-        // Find the position of the next underscore and set the cursor position to that index
-        let nextUnderscoreIndex = input.value.indexOf(maskChar);
-        if (nextUnderscoreIndex !== -1) {
-          input.setSelectionRange(nextUnderscoreIndex, nextUnderscoreIndex);
-        }
-      });
     }
 
     // ************** IPV4 input mask ************** //
@@ -317,6 +315,11 @@ document.addEventListener("DOMContentLoaded", function () {
         .join("");
 
       input.addEventListener("keydown", function (event) {
+        // if (event.key === ".") {
+        //   event.preventDefault();
+        //   return;
+        // }
+
         if (event.key === "Backspace" || event.key === "Delete") {
           event.preventDefault();
 
@@ -338,42 +341,78 @@ document.addEventListener("DOMContentLoaded", function () {
 
           input.value = newValue.join("");
           input.setSelectionRange(pos, pos);
+        } else if (
+          !/^\d$/.test(event.key) &&
+          event.key !== maskChar &&
+          ![37, 38, 39, 40].includes(event.keyCode)
+        ) {
+          event.preventDefault();
+          // return;
         }
       });
 
       input.addEventListener("input", function (event) {
-        // const value = event.target.value.replace(/[^0-9.]/g, "");
-        const value = event.target.value.replace(/\D/g, "");
+        let value = event.target.value;
 
-        let formattedValue = maskChar.repeat(15).split("");
+        value = value.replace(new RegExp(`[^\\d${maskChar}.]`, "g"), "");
 
-        formattedValue[3] = ".";
-        formattedValue[7] = ".";
-        formattedValue[11] = ".";
+        let cursorPosition = input.selectionStart;
+        let valueArray = value.split("");
 
-        for (
-          let i = 0, j = 0;
-          i < value.length && j < formattedValue.length;
-          j++
+        // Replace the mask character at the current cursor position with the entered input
+        if (
+          cursorPosition < valueArray.length &&
+          valueArray[cursorPosition] === maskChar
         ) {
-          if (j === 3 || j === 7 || j === 11) {
-            formattedValue[j] = ".";
-            // continue;
-          } else {
-            formattedValue[j] = value[i++];
-          }
+          valueArray[cursorPosition] = event.key;
         }
 
-        input.value = formattedValue.join("").slice(0, 15);
+        value = valueArray.join("");
+        input.value = value.slice(0, 15);
 
-        let nextUnderscoreIndex = input.value.indexOf(maskChar);
-        if (nextUnderscoreIndex !== -1) {
-          input.setSelectionRange(nextUnderscoreIndex, nextUnderscoreIndex);
+        // Set the cursor position to the next mask character
+        let nextMaskCharIndex = value.indexOf(maskChar, cursorPosition);
+        if (nextMaskCharIndex !== -1) {
+          input.setSelectionRange(nextMaskCharIndex, nextMaskCharIndex);
+        } else {
+          // If no more mask characters are found, set the cursor to the end
+          input.setSelectionRange(value.length, value.length);
         }
-
-        console.log(event);
-        console.log(`This is the value from input - ${event.target.value}`);
       });
+
+      // ////////////// This is the old version of the input event listener
+      ///////////////////
+
+      // input.addEventListener("input", function (event) {
+      //   // const value = event.target.value.replace(/[^0-9.]/g, "");
+      //   const value = event.target.value.replace(/\D/g, "");
+
+      //   let formattedValue = maskChar.repeat(15).split("");
+
+      //   formattedValue[3] = ".";
+      //   formattedValue[7] = ".";
+      //   formattedValue[11] = ".";
+
+      //   for (
+      //     let i = 0, j = 0;
+      //     i < value.length && j < formattedValue.length;
+      //     j++
+      //   ) {
+      //     if (j === 3 || j === 7 || j === 11) {
+      //       formattedValue[j] = ".";
+      //       // continue;
+      //     } else {
+      //       formattedValue[j] = value[i++];
+      //     }
+      //   }
+
+      //   input.value = formattedValue.join("").slice(0, 15);
+
+      //   let nextUnderscoreIndex = input.value.indexOf(maskChar);
+      //   if (nextUnderscoreIndex !== -1) {
+      //     input.setSelectionRange(nextUnderscoreIndex, nextUnderscoreIndex);
+      //   }
+      // });
     }
 
     // ************** IPV6 input mask ************** //
@@ -402,7 +441,6 @@ document.addEventListener("DOMContentLoaded", function () {
           }
         })
         .join("");
-      // console.log(input.value);
 
       input.addEventListener("keydown", function (event) {
         if (event.key === "Backspace" || event.key === "Delete") {
@@ -426,81 +464,87 @@ document.addEventListener("DOMContentLoaded", function () {
 
           input.value = newValue.join("");
           input.setSelectionRange(pos, pos);
+        } else if (
+          !/^\d$/.test(event.key) &&
+          event.key !== maskChar &&
+          ![37, 38, 39, 40].includes(event.keyCode)
+        ) {
+          event.preventDefault();
         }
       });
 
       input.addEventListener("input", function (event) {
-        const value = event.target.value.replace(/[^0-9a-f]/g, "");
+        let value = event.target.value;
 
-        let formattedValue = maskChar.repeat(39).split("");
+        value = value.replace(new RegExp(`[^\\d${maskChar}:]`, "g"), "");
 
-        formattedValue[4] = ":";
-        formattedValue[9] = ":";
-        formattedValue[14] = ":";
-        formattedValue[19] = ":";
-        formattedValue[24] = ":";
-        formattedValue[29] = ":";
-        formattedValue[34] = ":";
+        let cursorPosition = input.selectionStart;
+        let valueArray = value.split("");
 
-        for (
-          let i = 0, j = 0;
-          i < value.length && j < formattedValue.length;
-          j++
+        // Replace the mask character at the current cursor position with the entered input
+        if (
+          cursorPosition < valueArray.length &&
+          valueArray[cursorPosition] === maskChar
         ) {
-          if (
-            j === 4 ||
-            j === 9 ||
-            j === 14 ||
-            j === 19 ||
-            j === 24 ||
-            j === 29 ||
-            j === 34
-          ) {
-            formattedValue[j] = ":";
-            // continue;
-          } else {
-            formattedValue[j] = value[i++];
-          }
+          valueArray[cursorPosition] = event.key;
         }
 
-        input.value = formattedValue.join("").slice(0, 39);
+        value = valueArray.join("");
+        input.value = value.slice(0, 39);
 
-        let nextUnderscoreIndex = input.value.indexOf(maskChar);
-        if (nextUnderscoreIndex !== -1) {
-          input.setSelectionRange(nextUnderscoreIndex, nextUnderscoreIndex);
+        // Set the cursor position to the next mask character
+        let nextMaskCharIndex = value.indexOf(maskChar, cursorPosition);
+        if (nextMaskCharIndex !== -1) {
+          input.setSelectionRange(nextMaskCharIndex, nextMaskCharIndex);
+        } else {
+          // If no more mask characters are found, set the cursor to the end
+          input.setSelectionRange(value.length, value.length);
         }
-
-        console.log(event);
-        console.log(`This is the value from input - ${event.target.value}`);
       });
 
       // input.addEventListener("input", function (event) {
-      //   let value = event.target.value;
+      //   const value = event.target.value.replace(/[^0-9a-f]/g, "");
 
-      //   if (maskType === "IPv6") {
-      //     // Remove all non-hexadecimal and non-colon characters
-      //     value = value.replace(/[^0-9a-fA-F:]/g, "");
+      //   let formattedValue = maskChar.repeat(39).split("");
 
-      //     // Remove all colons
-      //     value = value.replace(/:/g, "");
+      //   formattedValue[4] = ":";
+      //   formattedValue[9] = ":";
+      //   formattedValue[14] = ":";
+      //   formattedValue[19] = ":";
+      //   formattedValue[24] = ":";
+      //   formattedValue[29] = ":";
+      //   formattedValue[34] = ":";
 
-      //     // Split the value into segments of 4 characters
-      //     const segments = value.match(/.{1,4}/g) || [];
-
-      //     // If there are more than 8 segments, remove the extra
-      //     if (segments.length > 8) {
-      //       segments.length = 8;
-      //     }
-
-      //     // Join the segments with colons
-      //     value = segments.join(":");
-
-      //     if (value.length > 45) {
-      //       value = value.slice(0, 45);
+      //   for (
+      //     let i = 0, j = 0;
+      //     i < value.length && j < formattedValue.length;
+      //     j++
+      //   ) {
+      //     if (
+      //       j === 4 ||
+      //       j === 9 ||
+      //       j === 14 ||
+      //       j === 19 ||
+      //       j === 24 ||
+      //       j === 29 ||
+      //       j === 34
+      //     ) {
+      //       formattedValue[j] = ":";
+      //       // continue;
+      //     } else {
+      //       formattedValue[j] = value[i++];
       //     }
       //   }
 
-      //   event.target.value = value;
+      //   input.value = formattedValue.join("").slice(0, 39);
+
+      //   let nextUnderscoreIndex = input.value.indexOf(maskChar);
+      //   if (nextUnderscoreIndex !== -1) {
+      //     input.setSelectionRange(nextUnderscoreIndex, nextUnderscoreIndex);
+      //   }
+
+      //   console.log(event);
+      //   console.log(`This is the value from input - ${event.target.value}`);
       // });
     }
 
@@ -1008,12 +1052,12 @@ document.addEventListener("DOMContentLoaded", function () {
         maskChar = "_";
       }
 
-      input.value = maskChar.repeat(8);
+      input.value = maskChar.repeat(29);
 
       input.value = input.value
         .split("")
         .map((char, index) => {
-          if (index === 3) {
+          if (index === 5 || index === 11 || index === 17 || index === 23) {
             return "-";
           } else {
             return char;
@@ -1063,26 +1107,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
       input.addEventListener("input", function (event) {
         let value = event.target.value;
-        console.log(`initial value: ${value}`);
 
         value = value.replace(
           new RegExp(`[^a-zA-Z0-9\\-${maskChar}]`, "g"),
           ""
         );
-        console.log(`Value after Regex: ${value}`);
-
-        // if (event.key === "-" || event.data === "-") {
-        //   return;
-        // }
 
         let cursorPosition = input.selectionStart;
         let valueArray = value.split("");
 
         // Replace the mask character at the current cursor position with the entered input
-        console.log(event.data);
-        console.log(event.key);
-        console.log(event);
-        console.log(cursorPosition);
         if (
           cursorPosition < valueArray.length &&
           valueArray[cursorPosition] === maskChar
@@ -1092,7 +1126,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         value = valueArray.join("");
-        input.value = value.slice(0, 8);
+        input.value = value.slice(0, 29);
 
         // Set the cursor position to the next mask character
         let nextMaskCharIndex = value.indexOf(maskChar, cursorPosition);
