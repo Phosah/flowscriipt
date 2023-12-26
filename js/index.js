@@ -221,6 +221,8 @@ document.addEventListener("DOMContentLoaded", function () {
           ![37, 38, 39, 40].includes(event.keyCode)
         ) {
           event.preventDefault();
+        } else if (input.value.charAt(pos) !== maskChar) {
+          event.preventDefault();
         }
       });
 
@@ -255,6 +257,8 @@ document.addEventListener("DOMContentLoaded", function () {
           // If no more mask characters are found, set the cursor to the end
           input.setSelectionRange(value.length, value.length);
         }
+
+        console.log(cursorPosition);
       });
 
       // \// // Older input listener with replacing character in exact position issues
@@ -319,11 +323,11 @@ document.addEventListener("DOMContentLoaded", function () {
         //   event.preventDefault();
         //   return;
         // }
+        let pos = input.selectionStart;
 
         if (event.key === "Backspace" || event.key === "Delete") {
           event.preventDefault();
 
-          let pos = input.selectionStart;
           let newValue = input.value.split("");
 
           if (
@@ -348,6 +352,8 @@ document.addEventListener("DOMContentLoaded", function () {
         ) {
           event.preventDefault();
           // return;
+        } else if (input.value.charAt(pos) !== maskChar) {
+          event.preventDefault();
         }
       });
 
@@ -443,10 +449,11 @@ document.addEventListener("DOMContentLoaded", function () {
         .join("");
 
       input.addEventListener("keydown", function (event) {
+        let pos = input.selectionStart;
+
         if (event.key === "Backspace" || event.key === "Delete") {
           event.preventDefault();
 
-          let pos = input.selectionStart;
           let newValue = input.value.split("");
 
           if (
@@ -469,6 +476,8 @@ document.addEventListener("DOMContentLoaded", function () {
           event.key !== maskChar &&
           ![37, 38, 39, 40].includes(event.keyCode)
         ) {
+          event.preventDefault();
+        } else if (input.value.charAt(pos) !== maskChar) {
           event.preventDefault();
         }
       });
