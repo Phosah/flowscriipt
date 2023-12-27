@@ -221,7 +221,10 @@ document.addEventListener("DOMContentLoaded", function () {
           ![37, 38, 39, 40].includes(event.keyCode)
         ) {
           event.preventDefault();
-        } else if (input.value.charAt(pos) !== maskChar) {
+        } else if (
+          input.value.charAt(pos) !== maskChar &&
+          ![37, 38, 39, 40].includes(event.keyCode)
+        ) {
           event.preventDefault();
         }
       });
@@ -352,7 +355,10 @@ document.addEventListener("DOMContentLoaded", function () {
         ) {
           event.preventDefault();
           // return;
-        } else if (input.value.charAt(pos) !== maskChar) {
+        } else if (
+          input.value.charAt(pos) !== maskChar &&
+          ![37, 38, 39, 40].includes(event.keyCode)
+        ) {
           event.preventDefault();
         }
       });
@@ -477,7 +483,10 @@ document.addEventListener("DOMContentLoaded", function () {
           ![37, 38, 39, 40].includes(event.keyCode)
         ) {
           event.preventDefault();
-        } else if (input.value.charAt(pos) !== maskChar) {
+        } else if (
+          input.value.charAt(pos) !== maskChar &&
+          ![37, 38, 39, 40].includes(event.keyCode)
+        ) {
           event.preventDefault();
         }
       });
